@@ -10,4 +10,4 @@
 __pycache__
 
 # ignore zipfiles
-.zip
+*.zip
