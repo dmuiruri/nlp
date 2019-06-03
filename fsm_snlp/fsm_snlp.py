@@ -40,7 +40,7 @@ def next_tags(tag='VB'):
 
 def count_next_tags(tag='VB'):
     """
-    Get the number of tags next to the given tag
+    Get the number of unique tags next to a given tag
 
     Stats of the next tag.
     """
@@ -51,6 +51,10 @@ def count_next_tags(tag='VB'):
 def tag_transition_dist(tag='VB'):
     """
     Calculate the transition distribution for a given tag.
+    
+    This function calculates the probabiluty that the next tag is a DT
+    (Determinant) given the current tag is a 'VB (Verb):
+    p(t[i+1]=DT|t[i]=VB)
     """
     vb_next = count_next_tags()
     dt = vb_next['DT']
@@ -59,11 +63,21 @@ def tag_transition_dist(tag='VB'):
         total += vb_next[item]
     return dt/total
 
+def tag_and_word(tag='VB', word='feel'):
+    """
+    Calculate the p(w[i]='feel'|t[i]=VB)
+
+    Calculates the probability of a given word given a tag
+    """
+    tags = [word_tag for sent in masc_tagged.tagged_sents() for word_tag in sent if word_tag[1] == tag]
+    return sum([True for tag in tags if tag[0] == word])/len(tags)
+
 if __name__ == '__main__':
     # print("Tag count for {} tag: {}".format('VB', tag_count()))
     # print("Tags in the corpus {}".format(unique_tags()))
 
 #     print("{}".format(next_tags()))
 #     print("\n")
-    print(count_next_tags())
-    print("Transition distribution for 'DT' tag: {}".format(transition_dist()))
+#     print(count_next_tags())
+#     print("Transition distribution for 'DT' tag: {}".format(transition_dist()))
+    print(tag_and_word())

@@ -11,3 +11,6 @@ __pycache__
 
 # ignore zipfiles
 *.zip
+
+# Ignore model res
+model_answer_code_day3.py
