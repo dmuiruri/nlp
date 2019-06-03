@@ -1,0 +1,13 @@
+# Files to be ignored
+
+# Ignore text files
+*.txt
+
+# Ignore backup files
+*.py~
+
+# Ignore python binaries
+__pycache__
+
+# ignore zipfiles
+.zip
