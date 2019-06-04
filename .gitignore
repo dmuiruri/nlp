@@ -12,5 +12,9 @@ __pycache__
 # ignore zipfiles
 *.zip
 
-# Ignore model res
+# Ignore model results
 model_answer_code_day3.py
+ass3utils.py
+
+# Don't export "pickeled" ttrained model
+*.pkl

@@ -4,18 +4,31 @@ Finite State Methods and Statistical NLP
 """
 
 import nltk
+import pickle
+from os import path
 from nltk.corpus import masc_tagged
 from nltk.tag import hmm
+from ass3utils import train_unsupervised
 
 nltk.download('masc_tagged')
 
-sentences = ["Once we have finished , we will go out .",
-             "There is always room for more understanding between warring peoples .",
-             "Evidently , this was one of Jud 's choicest tapestries , for the noble emitted a howl of grief and rage and leaped from his divan ."]
-
-sentences2 = ["Misjoggle in a gripty hifnipork .",
-              "One fretigy kriptog is always better than several intersplicks ."]
-
+sentences = [
+    "Once we have finished , we will go out .",
+    "There is always room for more understanding between warring peoples .",
+    "Evidently , this was one of Jud 's choicest tapestries , for the noble emitted a howl of grief and rage and leaped from his divan ."
+    ]
+sentences2 = [
+    "Misjoggle in a gripty hifnipork .",
+    "One fretigy kriptog is always better than several intersplicks ."
+    ]
+news = [
+    "Strong demand triggers oil rally .",
+    "Crude oil prices surged back above the $47 a barrel mark on Thursday after an energy market watchdog raised its forecasts for global demand ."
+    ]
+legal = ["If there is any conflict between the terms in the General Terms and the Additional Terms, then the Additional Terms govern .",
+         "You may have additional rights under the law .",
+         "We do not seek to limit those rights where it is prohibited to do so by law ."
+          ]
 def tag_count(tag='VB'):
     """
     Count the number of a given tag in corpus.
@@ -96,7 +109,43 @@ def nltk_hmm(sentences):
         print("Tagging sentence: {}".format(sentence))
         print("{}\n".format(model.tag(sentence.split())))
 
+def semi_supervised_hmm(sentences):
+    """
+    Train and test a tagging model with both labeled and unlabeled
+    data.
 
+    Trains a semi-supervised model where the model is trained with
+    partly labeled data and partly unlabled data.
+
+    sentences: Sentences to be tagged
+    """
+    with open('radio_planet_tokens.txt', 'r') as f:
+        unlabeled_data = [[word for word in sent.split()] for sent in f.readlines()]  # Labeled data
+    labeled_data = masc_tagged.tagged_sents()  # Unlabeled data
+ 
+   # Check if the model exists, saved the first time it is
+   # successfully created. Delete file to update model
+    if path.exists("hmm_model.pkl"):
+        # Load the model from disk
+        print("Loading model from the disk")
+        with open("hmm_model.pkl", 'rb') as model:
+            hmm_model = pickle.load(model)
+    else:
+        # Train the model since not found
+        print("Training the model...")
+        hmm_model = train_unsupervised(labeled_data, unlabeled_data)
+        with open("hmm_model.pkl", 'wb') as model:
+            pickle.dump(hmm_model, model)
+
+    # Tag sentences with trained model
+    for sentence in sentences:
+        print("Tagging sentence: {}".format(sentence))
+        print("{}\n".format(hmm_model.tag(sentence.split())))
+
+def log_prob_hmm():
+    """
+    """
+    
 if __name__ == '__main__':
 #     print("Tag count for {} tag: {}".format('VB', tag_count()))
 #     print("Tags in the corpus {}".format(unique_tags()))
@@ -106,12 +155,19 @@ if __name__ == '__main__':
 #     print(count_next_tags())
 
 #     # part 1a
-    print("Transition distribution for 'DT' tag: {}".format(tag_transition_dist()))
+#    print("Transition distribution for 'DT' tag: {}".format(tag_transition_dist()))
 #     # Part 1b
-    print("Computing the probability of a word given a tag {}".format(tag_and_word()))
+#    print("Computing the probability of a word given a tag {}".format(tag_and_word()))
 
 #     # part 2
 #     print("Part 2: NLTK hmm Model \n")
-    nltk_hmm(sentences)
-    nltk_hmm(sentences2)
-    
+#    nltk_hmm(sentences) # sentences seen during training
+#    nltk_hmm(sentences2)  # sentences not seen during training
+    # part 3
+#    semi_supervised_hmm(sentences)
+
+    # part 4
+    nltk_hmm(news)
+    semi_supervised_hmm(news)
+    nltk_hmm(legal)
+    semi_supervised_hmm(legal)
