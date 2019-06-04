@@ -84,7 +84,8 @@ def tag_and_word(tag='VB', word='feel'):
 def nltk_hmm(sentences):
     """
     Using NLTK's library to perform tagging by training a Hidden
-    Markov Model using Maximum Likelihood Estimates (MLE).
+    Markov Model, the model uses Maximum Likelihood Estimates (MLE) to
+    estimate the parameters.
 
     Note: The model appears to assign all unseen words as NN, one
     solution as indicated in the slides(Day 3) is "smoothing".
