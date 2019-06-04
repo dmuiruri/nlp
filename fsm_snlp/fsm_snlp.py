@@ -5,7 +5,16 @@ Finite State Methods and Statistical NLP
 
 import nltk
 from nltk.corpus import masc_tagged
+from nltk.tag import hmm
+
 nltk.download('masc_tagged')
+
+sentences = ["Once we have finished , we will go out .",
+             "There is always room for more understanding between warring peoples .",
+             "Evidently , this was one of Jud 's choicest tapestries , for the noble emitted a howl of grief and rage and leaped from his divan ."]
+
+sentences2 = ["Misjoggle in a gripty hifnipork .",
+              "One fretigy kriptog is always better than several intersplicks ."]
 
 def tag_count(tag='VB'):
     """
@@ -72,12 +81,36 @@ def tag_and_word(tag='VB', word='feel'):
     tags = [word_tag for sent in masc_tagged.tagged_sents() for word_tag in sent if word_tag[1] == tag]
     return sum([True for tag in tags if tag[0] == word])/len(tags)
 
-if __name__ == '__main__':
-    # print("Tag count for {} tag: {}".format('VB', tag_count()))
-    # print("Tags in the corpus {}".format(unique_tags()))
+def nltk_hmm(sentences):
+    """
+    Using NLTK's library to perform tagging by training a Hidden
+    Markov Model using Maximum Likelihood Estimates (MLE).
 
+    Note: The model appears to assign all unseen words as NN, one
+    solution as indicated in the slides(Day 3) is "smoothing".
+    """
+    trainer = hmm.HiddenMarkovModelTrainer()
+    model = trainer.train(masc_tagged.tagged_sents())
+    for sentence in sentences:
+        print("Tagging sentence: {}".format(sentence))
+        print("{}\n".format(model.tag(sentence.split())))
+
+
+if __name__ == '__main__':
+#     print("Tag count for {} tag: {}".format('VB', tag_count()))
+#     print("Tags in the corpus {}".format(unique_tags()))
+    
 #     print("{}".format(next_tags()))
 #     print("\n")
 #     print(count_next_tags())
-#     print("Transition distribution for 'DT' tag: {}".format(transition_dist()))
-    print(tag_and_word())
+
+#     # part 1a
+    print("Transition distribution for 'DT' tag: {}".format(tag_transition_dist()))
+#     # Part 1b
+    print("Computing the probability of a word given a tag {}".format(tag_and_word()))
+
+#     # part 2
+#     print("Part 2: NLTK hmm Model \n")
+    nltk_hmm(sentences)
+    nltk_hmm(sentences2)
+    
