@@ -16,5 +16,5 @@ __pycache__
 model_answer_code_day3.py
 ass3utils.py
 
-# Don't export "pickeled" ttrained model
+# Don't export "pickeled" trained model
 *.pkl
