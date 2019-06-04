@@ -5,12 +5,19 @@ Finite State Methods and Statistical NLP
 
 import nltk
 import pickle
+import random
 from os import path
 from nltk.corpus import masc_tagged
 from nltk.tag import hmm
 from ass3utils import train_unsupervised
 
 nltk.download('masc_tagged')
+
+short_sent = [
+    "Once we have finished , we will go out .",
+    "There is always room for more understanding between warring peoples .",
+    "Strong demand oil rally ."
+    ]
 
 sentences = [
     "Once we have finished , we will go out .",
@@ -142,9 +149,39 @@ def semi_supervised_hmm(sentences):
         print("Tagging sentence: {}".format(sentence))
         print("{}\n".format(hmm_model.tag(sentence.split())))
 
-def log_prob_hmm():
+def log_prob_hmm(sentences):
     """
+    Create a language model using a trained model
+
+    FIXME: For some reason the log_probability does not work, there is
+    a Runtime warning generated when applying the model.
     """
+    # Using a previously trained model
+    if path.exists("hmm_model.pkl"):
+        # Load the model from disk
+        print("Loading model from the disk")
+        with open("hmm_model.pkl", 'rb') as model:
+            hmm_model = pickle.load(model)
+        log_probs = hmm_model.log_probability([(word, None) for sent in sentences for word in sent.split()])
+        return log_probs
+    else:
+        print("Model does not exist, first train the model")
+
+def gen_hmm():
+    """
+    Generating a language from the HMM model
+    
+    The idea is to generate random sentences from the model.
+    """
+    print("Loading model from the disk")
+    if path.exists("hmm_model.pkl"):
+        with open("hmm_model.pkl", 'rb') as model:
+            hmm_model = pickle.load(model)
+
+    for i in range(7):
+        rand_len = random.randint(6, 10)
+        sent = hmm_model.random_sample(random, rand_len)
+        print(sent)
     
 if __name__ == '__main__':
 #     print("Tag count for {} tag: {}".format('VB', tag_count()))
@@ -167,7 +204,12 @@ if __name__ == '__main__':
 #    semi_supervised_hmm(sentences)
 
     # part 4
-    nltk_hmm(news)
-    semi_supervised_hmm(news)
-    nltk_hmm(legal)
-    semi_supervised_hmm(legal)
+#     nltk_hmm(news)
+#     semi_supervised_hmm(news)
+#     nltk_hmm(legal)
+#     semi_supervised_hmm(legal)
+    # part 5
+#    print(log_prob_hmm(short_sent))
+
+    # part 6
+    gen_hmm()
