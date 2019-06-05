@@ -2,6 +2,8 @@
 
 import nltk
 from nltk.parse.chart import BottomUpChartParser
+from nltk.corpus import treebank
+from nltk.grammar import Nonterminal
 
 nltk.download('treebank')
 
@@ -110,6 +112,18 @@ CD -> '1988' | 'one' | 'two'
 STOP -> '.'
 """
 
+sentences1 = [
+    "the guild began a strike against the TV and movie industry in March 1988 .".split(),
+    "the guild bought one ancillary company .".split(),
+    "the purchase price includes two ancillary companies .".split()
+    ]
+
+sentences2 = [
+    "Mr. Vinken is chairman .",
+    "Stocks rose .",
+    "Alan introduced a plan ."
+    ]
+
 cfg1 = nltk.CFG.fromstring(cfg_rules1) 
 cfg2 = nltk.CFG.fromstring(cfg_rules2) 
 cfg3 = nltk.CFG.fromstring(cfg_rules3)
@@ -121,30 +135,40 @@ parser = BottomUpChartParser(cfg_rules3_cnf)
 # cfg2.check_coverage("the guild began a strike against the TV and movie industry in March 1988 .".split())
 # cfg3.check_coverage("the guild bought one ancillary company .".split())
 
+def ex5():
+    """
+    Treebank Parser
+    """
+    # prd = list(set([p for tree in treebank.parsed_sents() for p in tree.productions()]))
+    prd = list(set([p for tree in treebank.parsed_sents() for p in tree.productions()]))
+    cfg_5 = nltk.CFG(Nonterminal("S"), prd)
+    parser = BottomUpChartParser(cfg_5)
+    for sent in sentences2:
+        parses = list(parser.parse(sent.split()))
+        print("Sentence: {}, Parse trees obtained for the sentence: {}".format(sent, len(parses)))
+    
 if __name__ == '__main__':
-    sentences = [
-        "the guild began a strike against the TV and movie industry in March 1988 .".split(),
-        "the guild bought one ancillary company .".split(),
-        "the purchase price includes two ancillary companies .".split()]
-
     # Exercise 2
-    print("Exercise 2: Grammar Extension >>")
-    for s in sentences:
+#     print("Exercise 2: Grammar Extension >>")
+#     for s in sentences:
         
-        print("Checking coverage for sentence {}".format(s))
-        print("Parsing Errors: {}\n".format(cfg3.check_coverage(s)))
+#         print("Checking coverage for sentence {}".format(s))
+#         print("Parsing Errors: {}\n".format(cfg3.check_coverage(s)))
 
-    # Exercise 3
-    print("Exercise 3: CNF Form>>")
-    cfg3_cnf = nltk.CFG.fromstring(cfg_rules3_cnf)
-    for s in sentences:
+#     # Exercise 3
+#     print("Exercise 3: CNF Form>>")
+#     cfg3_cnf = nltk.CFG.fromstring(cfg_rules3_cnf)
+#     for s in sentences:
         
-        print("Checking coverage for sentence {}".format(s))
-        print("Parsing Errors: {}\n".format(cfg3_cnf.check_coverage(s)))
-        print("Is the grammar is the CNF form: {}".format(cfg3_cnf.is_flexible_chomsky_normal_form()))
+#         print("Checking coverage for sentence {}".format(s))
+#         print("Parsing Errors: {}\n".format(cfg3_cnf.check_coverage(s)))
+#         print("Is the grammar is the CNF form: {}".format(cfg3_cnf.is_flexible_chomsky_normal_form()))
 
-    # Exercise 4
-    print("Exercise 4: Parsing with the Grammar ")
-    parser = BottomUpChartParser(cfg3_cnf)
-    for s in sentences:
-        print(list(parser.parse(s)))
+#     # Exercise 4
+#     print("Exercise 4: Parsing with the Grammar ")
+#     parser = BottomUpChartParser(cfg3_cnf)
+#     for s in sentences:
+#         print(list(parser.parse(s)))
+
+    # Exercise 5
+    ex5()

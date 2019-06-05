@@ -181,7 +181,8 @@ def gen_hmm():
     for i in range(7):
         rand_len = random.randint(6, 10)
         sent = hmm_model.random_sample(random, rand_len)
-        print(sent)
+        
+        print([" ".join([word[0] for word in sent])])
     
 if __name__ == '__main__':
 #     print("Tag count for {} tag: {}".format('VB', tag_count()))
@@ -209,7 +210,7 @@ if __name__ == '__main__':
 #     nltk_hmm(legal)
 #     semi_supervised_hmm(legal)
     # part 5
-#    print(log_prob_hmm(short_sent))
+    print(log_prob_hmm(short_sent))
 
     # part 6
-    gen_hmm()
+#    gen_hmm()
