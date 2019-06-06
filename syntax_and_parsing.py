@@ -150,9 +150,18 @@ def ex5():
 def ex6(symbol='S'):
     """
     PCFG: Probabilistic CFGs
+
+    Generating the probability distribution of a given symbol in a CFG.
     """
+    probs = dict()
     productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
-    return len([p for p in productions if p.lhs().symbol() == symbol])
+    all_sym_prd = [p for p in productions if p.lhs().symbol() == symbol]
+    sym_count =  len(all_sym_prd)
+    unique_rhs = set([p.rhs() for p in all_sym_prd])
+    all_rhs = [p.rhs() for p in all_sym_prd]
+    for rhs in unique_rhs:
+        probs[rhs] = all_rhs.count(rhs)/sym_count
+    return probs
 
 
 if __name__ == '__main__':
