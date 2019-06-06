@@ -147,6 +147,16 @@ def ex5():
         parses = list(parser.parse(sent.split()))
         print("Sentence: {}, Parse trees obtained for the sentence: {}".format(sent, len(parses)))
 
+def count_symbols(symbol='S'):
+    """
+    Count the number of symbols in a CFG.
+
+    A helper function to calculate the number of symbols in a CFG
+    """
+    productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
+    all_sym_prd = [p for p in productions if p.lhs().symbol() == symbol]
+    return len(all_sym_prd)
+
 def ex6(symbol='S', display=5):
     """
     PCFG: Probabilistic CFGs
