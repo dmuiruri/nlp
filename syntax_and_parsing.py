@@ -147,21 +147,29 @@ def ex5():
         parses = list(parser.parse(sent.split()))
         print("Sentence: {}, Parse trees obtained for the sentence: {}".format(sent, len(parses)))
 
-def ex6(symbol='S'):
+def ex6(symbol='S', display=5):
     """
     PCFG: Probabilistic CFGs
 
     Generating the probability distribution of a given symbol in a CFG.
+
+    For a condenced visual display of results, expansions with less
+    than five or any given number of instances are removed from the
+    results although the calculations for the probability distribution
+    of the symbol includes all available productions.
     """
-    probs = dict()
+    prob_dist = dict()
+    l5_view = dict()
     productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
     all_sym_prd = [p for p in productions if p.lhs().symbol() == symbol]
     sym_count =  len(all_sym_prd)
     unique_rhs = set([p.rhs() for p in all_sym_prd])
     all_rhs = [p.rhs() for p in all_sym_prd]
     for rhs in unique_rhs:
-        probs[rhs] = all_rhs.count(rhs)/sym_count
-    return probs
+        prob_dist[rhs] = all_rhs.count(rhs)/sym_count
+        if all_rhs.count(rhs) < display: # condence display
+            prob_dist.pop(rhs)
+    return prob_dist
 
 
 if __name__ == '__main__':
