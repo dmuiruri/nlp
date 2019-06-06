@@ -146,7 +146,15 @@ def ex5():
     for sent in sentences2:
         parses = list(parser.parse(sent.split()))
         print("Sentence: {}, Parse trees obtained for the sentence: {}".format(sent, len(parses)))
-    
+
+def ex6(symbol='S'):
+    """
+    PCFG: Probabilistic CFGs
+    """
+    productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
+    return len([p for p in productions if p.lhs().symbol() == symbol])
+
+
 if __name__ == '__main__':
     # Exercise 2
 #     print("Exercise 2: Grammar Extension >>")
@@ -171,4 +179,7 @@ if __name__ == '__main__':
 #         print(list(parser.parse(s)))
 
     # Exercise 5
-    ex5()
+#    ex5()
+
+    # Exercise 6
+    print("Counting symbols in a production {}".format(ex6()))
