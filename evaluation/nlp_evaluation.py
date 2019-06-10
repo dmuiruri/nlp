@@ -44,7 +44,7 @@ def evaluation(ref_tags, pred_tags, model='HMM'): #test_tags
                 correct_tags += cm[tag_ref, tag_test]
             total_tags += cm[tag_ref, tag_test]
     accuracy = correct_tags/total_tags
-    print("Overall accuracy of the {} model: {}".format(model, accuracy))
+    print("Overall accuracy of the {} model: {:.3f}".format(model, accuracy))
 
     # Calculating Precision, Recall and F-Score for the 'NN' tag
     true_p = cm['NN', 'NN']
@@ -53,9 +53,9 @@ def evaluation(ref_tags, pred_tags, model='HMM'): #test_tags
     precision = true_p/(true_p + false_p)
     recall = true_p/all_true_nn
     f_score = 2 * precision * recall /(precision + recall)
-    print("Precision for 'NN' tag: {}".format(precision))
-    print("Recall score for 'NN' tag {}".format(recall))
-    print("F-score for 'NN' with Beta=1: {}".format(f_score))
+    print("Precision for 'NN' tag: {:.2f}".format(precision))
+    print("Recall score for 'NN' tag {:.2f}".format(recall))
+    print("F-score for 'NN' with Beta=1: {:.2f}".format(f_score))
 
 def ex21():
     """
