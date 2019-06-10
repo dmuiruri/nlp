@@ -108,7 +108,20 @@ def ex22():
     print("\nEvaluating a majority tagger: ")
     pred_tags = [item[1] for item in majority_tagger(training_sents, test_tokens)]
     evaluation(test_tags, pred_tags, model='Majority Tagger')
-    
+
+def ex23():
+    """
+    Evaluate a HMM language model.
+    """
+    hmm_tagger = HiddenMarkovModelTagger.train(training_sents)
+
+    test_set = [(token, None) for token in test_tokens]
+    log_prob = hmm_tagger.log_probability(test_set)
+    no_of_tokens = len(test_set)
+
+    # Calculate perplexity
+    perplexity = 2 ** (-log_prob/no_of_tokens)
+    return perplexity
 
 if __name__ == '__main__':
 #     true_pos = total_relevant
@@ -126,4 +139,5 @@ if __name__ == '__main__':
 #     print("Accuracy: {}".format(num_R/total_docs))
 
 #     ex21()
-    ex22()
+#     ex22()
+    print(ex23())
