@@ -15,6 +15,7 @@ __pycache__
 # Ignore model results
 model_answer_code_day3.py
 ass3utils.py
+ass5utils.py
 
 # Don't export "pickeled" trained model
 *.pkl

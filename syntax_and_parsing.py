@@ -1,11 +1,16 @@
 #! /usr/bin/env python
+"""
+This script deals with issues related with Syntax and Parsing in NLP.
+"""
 
 import nltk
 from nltk.parse.chart import BottomUpChartParser
+from nltk.parse import pchart
 from nltk.corpus import treebank
 from nltk.grammar import Nonterminal
-
-nltk.download('treebank')
+from nltk import induce_pcfg
+from nltk.tokenize import TreebankWordTokenizer
+# nltk.download('treebank')
 
 cfg_rules1 = """
 S -> NP-SBJ VP STOP
@@ -181,32 +186,69 @@ def ex6(symbol='S', display=5):
             prob_dist.pop(rhs)
     return prob_dist
 
+def ex7():
+    """
+    Using NLTK's own library to generate the probabilities.
+    """
+    productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
+    pcfg = induce_pcfg(Nonterminal("S"), productions)
+    # print(pcfg.productions())
+    parser = pchart.InsideChartParser(pcfg, beam_size=800)
+
+    for sent in sentences1:
+        parsed = list(parser.parse(sent.split()))
+        print("Parsing sent: {}".format(sent))
+        print(parsed[0])
+
+def ex8():
+    """
+    Parsing unseen sentences (not in the training corpus)
+    """
+    legal_sentences = ["If there is any conflict between the terms in the General Terms and the Additional Terms, then the Additional Terms govern .",
+                       "You may have additional rights under the law .",
+                       "We do not seek to limit those rights where it is prohibited to do so by law ."
+                       ]
+    tokenized = [[TreebankWordTokenizer().tokenize(sent)] for sent in legal_sentences] # sentences2
+    productions = [p for tree in treebank.parsed_sents() for p in tree.productions()]
+    pcfg = induce_pcfg(Nonterminal("S"), productions)
+    parser = pchart.InsideChartParser(pcfg, beam_size=500)
+    for sent in tokenized:
+        print("Parsing sent: {}".format(sent[0]))
+        parsed = list(parser.parse(sent[0]))
+        print(parsed)
 
 if __name__ == '__main__':
     # Exercise 2
-#     print("Exercise 2: Grammar Extension >>")
-#     for s in sentences:
+    print("Exercise 2: Grammar Extension >>")
+    for s in sentences:
         
-#         print("Checking coverage for sentence {}".format(s))
-#         print("Parsing Errors: {}\n".format(cfg3.check_coverage(s)))
+        print("Checking coverage for sentence {}".format(s))
+        print("Parsing Errors: {}\n".format(cfg3.check_coverage(s)))
 
-#     # Exercise 3
-#     print("Exercise 3: CNF Form>>")
-#     cfg3_cnf = nltk.CFG.fromstring(cfg_rules3_cnf)
-#     for s in sentences:
+    # Exercise 3
+    print("Exercise 3: CNF Form>>")
+    cfg3_cnf = nltk.CFG.fromstring(cfg_rules3_cnf)
+    for s in sentences:
         
-#         print("Checking coverage for sentence {}".format(s))
-#         print("Parsing Errors: {}\n".format(cfg3_cnf.check_coverage(s)))
-#         print("Is the grammar is the CNF form: {}".format(cfg3_cnf.is_flexible_chomsky_normal_form()))
+        print("Checking coverage for sentence {}".format(s))
+        print("Parsing Errors: {}\n".format(cfg3_cnf.check_coverage(s)))
+        print("Is the grammar is the CNF form: {}".format(cfg3_cnf.is_flexible_chomsky_normal_form()))
 
-#     # Exercise 4
-#     print("Exercise 4: Parsing with the Grammar ")
-#     parser = BottomUpChartParser(cfg3_cnf)
-#     for s in sentences:
-#         print(list(parser.parse(s)))
+    # Exercise 4
+    print("Exercise 4: Parsing with the Grammar ")
+    parser = BottomUpChartParser(cfg3_cnf)
+    for s in sentences:
+        print(list(parser.parse(s)))
 
     # Exercise 5
-#    ex5()
+    ex5()
 
     # Exercise 6
+    print(count_symbols())
     print("Counting symbols in a production {}".format(ex6()))
+
+    # Exercise 7
+    ex7()
+    
+    # Exercise 8
+    ex8()
