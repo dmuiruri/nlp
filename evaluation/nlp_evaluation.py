@@ -50,6 +50,12 @@ def ex21():
     print("Recall score for 'NN' tag {}".format(recall))
     print("F-score for 'NN' with Beta=1: {}".format(f_score))
 
+def random_tagger(tagset, tokens):
+    """
+    Randomly generate a POS tag for given tokens.
+    """
+    return [(token, random.choice(tagset)) for token in tokens]
+    
 if __name__ == '__main__':
 #     true_pos = total_relevant
 #     false_pos = num_R - total_relevant
