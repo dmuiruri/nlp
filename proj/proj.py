@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 """
-In this script we determing named entities in the corpus and try to
-identity the topics coverage in the text.
+In this script we identify named entities in the corpus and try to
+identity the topics coverage in the text for a given entity.
 
 Search for a named entity in the corpus and see which articles are in
 the corpus with the named entity.
@@ -49,23 +49,28 @@ def topic_modelling(files=['114.txt', '100.txt', '465.txt', '059.txt']):
     """
     perform topic modelling for a given list of files
     """
-    ntopics = 5
+    ntopics = 2
     articles = []
-    fp = path.join(data_dir, '100.txt')
-    stop_words = set(stopwords.words('english'))
-
-    with open(fp) as f:
-        text = f.read().split()
-    articles.append([word for word in text if word not in stop_words])
+    stop_words = set(stopwords.words('english')) #| {'Mr', 'The'}
+    for f in files:
+        fp = path.join(data_dir, f)
+        with open(fp) as f:
+            text = f.read().split()
+        articles.append([word for word in text if word not in stop_words])
 
     dictionary = corpora.Dictionary(articles)
     corpus = [dictionary.doc2bow(a) for a in articles]  # doc to BOW
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=ntopics, passes=100)
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=ntopics, passes=300)
     for i in range(ntopics):
         topwords = lda.show_topic(i, topn=5)
         print("Top words in topic {}: {}\n".format(i+1, topwords))
 
 
 if __name__ == '__main__':
+    """
+    Test identification of named entities in the corpus and try to
+    determine the topic related to a given entity.
+    """
     # print(process_ner(entity='WorldCom'))
-    topic_modelling()
+    file_list = process_ner(entity='WorldCom')
+    topic_modelling(files=file_list)
