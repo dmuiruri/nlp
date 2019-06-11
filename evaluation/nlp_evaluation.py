@@ -15,6 +15,17 @@ retrieved = ['R', 'N', 'N', 'R', 'R', 'N', 'N', 'N',
 num_R = retrieved.count('R')
 num_N = retrieved.count('N')
 
+s1_t = ['So', 'far', 'Mr.', 'Hahn', 'is', 'trying', 'to', 'entice', 'Nekoosa', 'into', 'negotiating', 'a', 'friendly',
+      'surrender', 'while', 'talking', 'tough']
+s2_t = ['Despite', 'the', 'economic', 'slowdown', 'there', 'are', 'few', 'clear', 'signs', 'that', 'growth', 'is',
+      'coming', 'to', 'a', 'halt']
+s3_t = ['The', 'real', 'battle', 'is', 'over', 'who', 'will', 'control', 'that', 'market', 'and', 'reap',
+      'its', 'huge', 'rewards']
+
+tags1 = ['IN', 'RB', 'NNP', 'NNP', 'VBZ', 'VBG', 'TO', 'VB', 'NNP', 'IN', 'VBG', 'DT', 'JJ', 'NN', 'IN', 'VBG', 'JJ']
+tags2 = ['IN', 'DT', 'JJ', 'NN', 'EX', 'VBP', 'JJ', 'JJ', 'NNS', 'IN', 'NN', 'VBZ', 'VBG', 'TO', 'DT', 'NN']
+tags3 = ['DT', 'JJ', 'NN', 'VBZ', 'IN', 'WP', 'MD', 'VB', 'DT', 'NN', 'CC', 'VB', 'PRP$', 'JJ', 'NNS']
+
 training_sents, test_sents = split_corpus(treebank, 0.8)
 test_tokens = [token[0] for sent in test_sents for token in sent]
 test_tags = [tag[1] for sent in test_sents for tag in sent]
@@ -121,23 +132,63 @@ def ex23():
 
     # Calculate perplexity
     perplexity = 2 ** (-log_prob/no_of_tokens)
-    return perplexity
+    print("Perplexity of HMM: {:.2f}".format(perplexity))
+
+def ex31():
+    """
+    Annotate given sentences (manual)
+    """
+    s1 = ['DT', 'NN', 'NNP', 'NN', 'VB', 'VB', 'TO', 'VB', 'NN', 'DT', 'NN', 'DT', 'JJ',
+          'VB', 'IN', 'VB', 'JJ']
+    s2 = ['IN', 'DT', 'NN', 'NN', 'EX', 'DT', 'JJ', 'NN', 'JJ', 'NN', 'VB', 'DT',
+          'VB', 'TO', 'DT', 'NN']
+    s3 = ['DT', 'JJ', 'NN', 'VB', 'IN', 'WP', 'VB', 'NN', 'DT', 'NN', 'CC', 'NN',
+          'PRP$', 'JJ', 'NN']
+
+    print(s1, )
+    print(s2)
+    print(s3)
+
+def raw_agreement(manual_tags, ref_tags):
+    agree = 0
+    for mtag in manual_tags:
+        for rtag in ref_tags:
+            if mtag == rtag:
+                agree += 1
+    return agree/len(ref_tags)
+    
+def ex32():
+    """
+    Calculate the raw agreement rate between manual annotations and
+    the gold standard.
+    """
+    s1 = ['DT', 'NN', 'NNP', 'NN', 'VB', 'VB', 'TO', 'VB', 'NN', 'DT', 'NN', 'DT', 'JJ',
+          'VB', 'IN', 'VB', 'JJ']
+    s2 = ['IN', 'DT', 'NN', 'NN', 'EX', 'DT', 'JJ', 'NN', 'JJ', 'NN', 'VB', 'DT',
+          'VB', 'TO', 'DT', 'NN']
+    s3 = ['DT', 'JJ', 'NN', 'VB', 'IN', 'WP', 'VB', 'NN', 'DT', 'NN', 'CC', 'NN',
+          'PRP$', 'JJ', 'NN']
+    print("Raw agreement for sentence 1: {:.2f}".format(raw_agreement(s1, tags1)))
+    print("Raw agreement for sentence 2: {:.2f}".format(raw_agreement(s2, tags2)))
+    print("Raw agreement for sentence 3: {:.2f}".format(raw_agreement(s3, tags3)))
+
 
 if __name__ == '__main__':
-#     true_pos = total_relevant
-#     false_pos = num_R - total_relevant
-#     true_neg = total_docs - total_relevant
-#     false_neg = true_neg - num_N
-#     precision = true_pos/(true_pos + false_pos)
-#     recall = true_pos/(true_pos + false_neg)
-#     print("True positives: {}".format(true_pos))
-#     print("False positives: {}".format(false_pos))
-#     print("True negatives: {}".format(true_neg))
-#     print("Precision (P): {}".format(true_pos/(true_pos + false_pos)))
-#     print("Recall (R): {}".format(true_pos/(true_pos + false_neg)))
-#     print("F-Score with beta=1: {}".format((2*precision*recall)/(precision + recall)))
-#     print("Accuracy: {}".format(num_R/total_docs))
+    true_pos = total_relevant
+    false_pos = num_R - total_relevant
+    true_neg = total_docs - total_relevant
+    false_neg = true_neg - num_N
+    precision = true_pos/(true_pos + false_pos)
+    recall = true_pos/(true_pos + false_neg)
+    print("True positives: {}".format(true_pos))
+    print("False positives: {}".format(false_pos))
+    print("True negatives: {}".format(true_neg))
+    print("Precision (P): {}".format(true_pos/(true_pos + false_pos)))
+    print("Recall (R): {}".format(true_pos/(true_pos + false_neg)))
+    print("F-Score with beta=1: {}".format((2*precision*recall)/(precision + recall)))
+    print("Accuracy: {}".format(num_R/total_docs))
 
-#     ex21()
-#     ex22()
-    print(ex23())
+    ex21()
+    ex22()
+    ex23()
+    ex32()
