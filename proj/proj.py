@@ -10,6 +10,7 @@ import spacy
 import gensim
 from os import listdir, path
 from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 from gensim.models import LdaModel
 from gensim import corpora
 
@@ -18,7 +19,7 @@ data_dir = path.dirname("./business/")
 
 def get_tokens(article):
     """
-    Get the tokens from a doc (spacy do
+    Get the tokens from a doc
     """
     doc = nlp(article)
     for sent in doc.sents:
@@ -29,7 +30,8 @@ def process_ner(entity='Nokia'):
     """
     Search for articles with a given named entity in an article
 
-    Returns a list with files containing the named entity.
+    Returns a list with names of the files that contain the given
+    named entity.
     """
     articles_list = []
     for article in listdir(data_dir):
@@ -43,6 +45,10 @@ def process_ner(entity='Nokia'):
                         doc = nlp(temp)
             except FileNotFoundError:
                 print("File was not found or could not be openend")
+    found = len(articles_list)
+    all_docs = len(listdir(data_dir))
+    hit = found/all_docs
+    print("Doc hit(%): {:.3f}, {} docs of {}".format(hit, found, all_docs))
     return articles_list
 
 def topic_modelling(files=['114.txt', '100.txt', '465.txt', '059.txt']):
@@ -51,16 +57,16 @@ def topic_modelling(files=['114.txt', '100.txt', '465.txt', '059.txt']):
     """
     ntopics = 2
     articles = []
-    stop_words = set(stopwords.words('english')) #| {'Mr', 'The'}
+    stop_words = set(stopwords.words('english')) | {'Mr', 'The'}
     for f in files:
         fp = path.join(data_dir, f)
         with open(fp) as f:
-            text = f.read().split()
+            text = f.read().split()  # word_tokenize(
         articles.append([word for word in text if word not in stop_words])
 
     dictionary = corpora.Dictionary(articles)
     corpus = [dictionary.doc2bow(a) for a in articles]  # doc to BOW
-    lda = LdaModel(corpus, id2word=dictionary, num_topics=ntopics, passes=300)
+    lda = LdaModel(corpus, id2word=dictionary, num_topics=ntopics, passes=500)
     for i in range(ntopics):
         topwords = lda.show_topic(i, topn=5)
         print("Top words in topic {}: {}\n".format(i+1, topwords))
