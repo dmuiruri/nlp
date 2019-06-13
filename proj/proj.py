@@ -57,7 +57,7 @@ def topic_modelling(files=['114.txt', '100.txt', '465.txt', '059.txt']):
     """
     ntopics = 2
     articles = []
-    stop_words = set(stopwords.words('english')) | {'Mr', 'The'}
+    stop_words = set(stopwords.words('english')) | {'Mr', 'The', '-', 'said'}
     for f in files:
         fp = path.join(data_dir, f)
         with open(fp) as f:
@@ -77,6 +77,9 @@ if __name__ == '__main__':
     Test identification of named entities in the corpus and try to
     determine the topic related to a given entity.
     """
-    # print(process_ner(entity='WorldCom'))
-    file_list = process_ner(entity='WorldCom')
+    low_ner = 'Warner'
+    med_ner = 'WorldCom'
+    high_ner = 'Dollar'
+    file_list = process_ner(entity=high_ner)
+    # print(file_list)
     topic_modelling(files=file_list)
