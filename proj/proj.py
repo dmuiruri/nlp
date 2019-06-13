@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from gensim.models import LdaModel
 from gensim import corpora
+from sklearn.feature_extraction.text import CountVectorizer
 
 nlp = spacy.load("en")
 data_dir = path.dirname("./business/")
@@ -71,15 +72,34 @@ def topic_modelling(files=['114.txt', '100.txt', '465.txt', '059.txt']):
         topwords = lda.show_topic(i, topn=5)
         print("Top words in topic {}: {}\n".format(i+1, topwords))
 
+def gen_docs(dpath=data_dir):
+    """
+    Get documents to create a corpus.
+    """
+    for article in listdir(dpath):
+        fp = path.join(dpath, article)
+        if path.isfile(fp):
+            with open(fp, 'r') as f:
+                yield f.read()
+
+def get_doc_term_mat(docs_obj):
+    """
+    Generate a doc term matrix using a basic word count model
+    """
+    corpus = docs_obj()
+    vectorizer = CountVectorizer(stop_words='english')
+    X = vectorizer.fit_transform(corpus)
+    mat = X.toarray()
+    return mat.shape
 
 if __name__ == '__main__':
     """
     Test identification of named entities in the corpus and try to
     determine the topic related to a given entity.
     """
-    low_ner = 'Warner'
-    med_ner = 'WorldCom'
-    high_ner = 'Dollar'
-    file_list = process_ner(entity=high_ner)
-    # print(file_list)
-    topic_modelling(files=file_list)
+#     low_ner = 'Warner'
+#     med_ner = 'WorldCom'
+#     high_ner = 'Dollar'
+#     file_list = process_ner(entity=high_ner)
+#     topic_modelling(files=file_list)
+    print(get_doc_term_mat(gen_docs))
