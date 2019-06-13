@@ -84,13 +84,13 @@ def gen_docs(dpath=data_dir):
 
 def get_doc_term_mat(docs_obj):
     """
-    Generate a doc term matrix using a basic word count model
+    Generate a term document matrix using a basic word count model
     """
     corpus = docs_obj()
     vectorizer = CountVectorizer(stop_words='english')
     X = vectorizer.fit_transform(corpus)
     mat = X.toarray()
-    return mat.shape
+    return mat
 
 if __name__ == '__main__':
     """
