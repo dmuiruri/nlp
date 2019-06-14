@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from gensim.models import LdaModel
 from gensim import corpora
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 nlp = spacy.load("en")
 data_dir = path.dirname("./business/")
@@ -92,6 +92,16 @@ def get_doc_term_mat(docs_obj):
     mat = X.toarray()
     return mat
 
+def get_tf_idf_mat(docs_obj):
+    """
+    Generate a term document matrix using a basic word count model
+    """
+    corpus = docs_obj()
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+    X = tfidf_vectorizer.fit_transform(corpus)
+    mat = X.toarray()
+    return mat
+
 if __name__ == '__main__':
     """
     Test identification of named entities in the corpus and try to
@@ -102,4 +112,5 @@ if __name__ == '__main__':
 #     high_ner = 'Dollar'
 #     file_list = process_ner(entity=high_ner)
 #     topic_modelling(files=file_list)
-    print(get_doc_term_mat(gen_docs))
+#     print(get_doc_term_mat(gen_docs))
+    print(get_tf_idf_mat(gen_docs))
