@@ -94,7 +94,11 @@ def get_doc_term_mat(docs_obj):
 
 def get_tf_idf_mat(docs_obj):
     """
-    Generate a term document matrix using a basic word count model
+    Generate a tf-idf matrix.
+
+    This matrix is generated using log(1 + tf) to get the term
+    frequency and N/log(N/df) for the inverse document frequency =>
+    log(1 + tf) * log(N/df)
     """
     corpus = docs_obj()
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
