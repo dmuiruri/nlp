@@ -14,6 +14,7 @@ from nltk.tokenize import word_tokenize
 from gensim.models import LdaModel
 from gensim import corpora
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 nlp = spacy.load("en")
 data_dir = path.dirname("./business/")
@@ -105,6 +106,26 @@ def get_tf_idf_mat(docs_obj):
     X = tfidf_vectorizer.fit_transform(corpus)
     mat = X.toarray()
     return mat
+
+def cosine_similarity(qt=[]):
+    """
+    Get the cosine similarity between documents or between a query
+    term and the documents
+    """
+    # if qt empty calculate cosine similarity between docs
+    if qt:
+        X = get_tf_idf_mat()
+        mat = X_tfidf.toarray()
+        cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
+        qt = tfidf_vectorizer.transform(qt)
+        for i in range(len(qt)):
+            cs[i] = cosine_similarity(qt, mat)[0]
+        return cs
+    else:
+        cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
+        for i in range(len(documents)):
+            cs[i] = cosine_similarity(mat[i:i + 1], mat)[0]
+        return cs
 
 if __name__ == '__main__':
     """
