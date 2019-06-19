@@ -8,6 +8,7 @@ the corpus with the named entity.
 """
 import spacy
 import gensim
+import numpy as np
 from os import listdir, path
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -110,12 +111,14 @@ def get_tf_idf_mat(docs_obj):
 def cosine_similarity(qt=[]):
     """
     Get the cosine similarity between documents or between a query
-    term and the documents
-    """
-    # if qt empty calculate cosine similarity between docs
+    term and the documents. If qt empty calculate cosine similarity
+    between docs.
+
+    qt: A given query term
+    """ 
+    X = get_tf_idf_mat()
+    mat = X.toarray()
     if qt:
-        X = get_tf_idf_mat()
-        mat = X_tfidf.toarray()
         cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
         qt = tfidf_vectorizer.transform(qt)
         for i in range(len(qt)):
@@ -138,4 +141,5 @@ if __name__ == '__main__':
 #     file_list = process_ner(entity=high_ner)
 #     topic_modelling(files=file_list)
 #     print(get_doc_term_mat(gen_docs))
-    print(get_tf_idf_mat(gen_docs))
+#     print(get_tf_idf_mat(gen_docs))
+    print(cosine_similarity())
