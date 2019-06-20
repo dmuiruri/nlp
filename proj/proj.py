@@ -108,28 +108,30 @@ def get_tf_idf_mat(docs_obj):
     mat = X.toarray()
     return mat
 
-def cosine_similarity(qt=[]):
+def get_cosine_similarity(docs_obj, qt=[]):
     """
     Get the cosine similarity between documents or between a query
     term and the documents. If qt empty calculate cosine similarity
     between docs.
 
+    docs_obj: A generator to read text files from local disk
     qt: A given query term
     """ 
-    X = get_tf_idf_mat()
+    corpus = docs_obj()
+    tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+    X = tfidf_vectorizer.fit_transform(corpus)
     mat = X.toarray()
-    if qt:
+    print("matrix type: {}".format(type(mat)))
+    if len(qt) > 0:
+        print("The length of query term {}".format(len(qt)))
         cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
         qt = tfidf_vectorizer.transform(qt)
         for i in range(len(qt)):
             cs[i] = cosine_similarity(qt, mat)[0]
         return cs
     else:
-        cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
-        for i in range(len(documents)):
-            cs[i] = cosine_similarity(mat[i:i + 1], mat)[0]
-        return cs
-
+        return cosine_similarity(mat[0:1], mat)
+    
 if __name__ == '__main__':
     """
     Test identification of named entities in the corpus and try to
@@ -142,4 +144,4 @@ if __name__ == '__main__':
 #     topic_modelling(files=file_list)
 #     print(get_doc_term_mat(gen_docs))
 #     print(get_tf_idf_mat(gen_docs))
-    print(cosine_similarity())
+    print(get_cosine_similarity(gen_docs))
