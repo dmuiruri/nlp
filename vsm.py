@@ -130,7 +130,7 @@ def exercise31():
     Find similar documents using cosine similarity
     """
     
-    comb = list(itertools.combinations([i for i in range(len(documents))], 2)) 
+    # comb = list(itertools.combinations([i for i in range(len(documents))], 2)) 
     mat = X_tfidf.toarray()
     cs = np.zeros((5, 5)) # (mat.shape)
     for i in range(len(documents)):
@@ -192,11 +192,11 @@ if __name__ == '__main__':
 #     # Exercise 2.2
 #     print("TF-IDF to weight words \n{}\n".format(exercise22()))
 
-#     # Exercise 3.1
-#     print("Cosine Similarity of the documents \n{}\n".format(exercise31()))
+    # Exercise 3.1
+    print("Cosine Similarity of the documents \n{}\n".format(exercise31()))
 
-#     # Exercise 3.2
-#     print("Cosine similarity of unseen docs \n{}\n".format(exercise32()))
+    # Exercise 3.2
+    print("Cosine similarity of unseen docs \n{}\n".format(exercise32()))
 
     # Exercise 4
     print("Topic modelling \n{}\n".format(exercise4('./de-news.txt')))
