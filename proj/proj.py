@@ -121,16 +121,17 @@ def get_cosine_similarity(docs_obj, qt=[]):
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
     X = tfidf_vectorizer.fit_transform(corpus)
     mat = X.toarray()
-    print("matrix type: {}".format(type(mat)))
     if len(qt) > 0:
         print("The length of query term {}".format(len(qt)))
-        cs = np.zeros((mat.shape[0], mat.shape[0])) # (mat.shape)
+        cs = np.zeros((mat.shape[0], mat.shape[0]))
         qt = tfidf_vectorizer.transform(qt)
-        for i in range(len(qt)):
-            cs[i] = cosine_similarity(qt, mat)[0]
-        return cs
+        return cosine_similarity(qt, mat) 
     else:
-        return cosine_similarity(mat[0:1], mat)
+        # Depending on what value we use to determine closely similar
+        # documents, we can create a similarity threshold.
+        # (cs > 0.5)*1
+        cs = cosine_similarity(mat)
+        return cs
     
 if __name__ == '__main__':
     """
