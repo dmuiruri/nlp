@@ -129,9 +129,8 @@ def get_cosine_similarity(docs_obj, qt=[]):
     else:
         # Depending on what value we use to determine closely similar
         # documents, we can create a similarity threshold.
-        # (cs > 0.5)*1
-        cs = cosine_similarity(mat)
-        return cs
+        # (cosine_similarity > 0.5)*1
+        return cosine_similarity(mat)
     
 if __name__ == '__main__':
     """
